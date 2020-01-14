@@ -1,0 +1,247 @@
+Deployment using Docker image
+
+https://docs.memsql.com/v7.0/guides/deploy-memsql/
+
+Deploy MemSQL -> Self-Managed -> MemSQL Tools(Using first party tool directly) -> Single Host -> Docker (Windows, Mac, Linux)
+
+memsql/cluster-in-a-box
+
+Running MemSQL in a Docker container as described below is for prototyping and functional testing purposes only!
+
+* Before You Begin
+
+Install Docker
+For newer macOS and Windows 10 machines, Install Docker Community Edition (CE). For users running older versions of Windows 
+or macOS, install Docker Toolbox instead.
+
+Docker Desktop for Mac (macOS)
+
+Docker ID : poojabhat
+email: pooja.bhat@yahoo.com
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+System requirements
+Your Mac must meet the following requirements to successfully install Docker Desktop:
+
+Mac hardware must be a 2010 or newer model, with Intel’s hardware support for memory management unit (MMU) virtualization, 
+including Extended Page Tables (EPT) and Unrestricted Mode. You can check to see if your machine has this support by running 
+the following command in a terminal: sysctl kern.hv_support
+
+If your Mac supports the Hypervisor framework, the command prints kern.hv_support: 1.
+
+macOS must be version 10.13 or newer. We recommend upgrading to the latest version of macOS.
+
+If you experience any issues after upgrading your macOS to version 10.15, you must install the latest version of Docker 
+Desktop to be compatible with this version of macOS.
+
+Note: Docker supports Docker Desktop on the most recent versions of macOS. That is, the current release of macOS and the 
+previous two releases. As new major versions of macOS are made generally available, Docker will stop supporting the oldest 
+version and support the newest version of macOS (in addition to the previous two releases).
+
+At least 4 GB of RAM.
+
+VirtualBox prior to version 4.3.30 must not be installed as it is not compatible with Docker Desktop.
+
+Note: If your system does not satisfy these requirements, you can install Docker Toolbox, which uses Oracle VirtualBox instead 
+of HyperKit.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+****************************** Docker Desktop Installation from Docker Hub : Start ******************************
+
+https://hub.docker.com/?overlay=onboarding
+
+1) Click Download Docker Desktop for Mac
+
+Install docker and pull it to Application Folder
+Log In using your DockerID
+
+2) git clone doodle
+
+git clone https://github.com/docker/doodle.git
+
+3) Build and tag a Docker image: A Docker image is a private filesystem, just for your container. It provides all the files and
+code your container will need. Running the docker build command creates a Docker image using the Dockerfile. This built image 
+is in your machine's local Docker image registry.
+
+cd doodle/cheers2019 && docker build -t poojabhat/cheers2019 .
+
+""Sending build context to Docker daemon   12.8kB
+Step 1/9 : FROM golang:1.11-alpine AS builder
+1.11-alpine: Pulling from library/golang
+9d48c3bd43c5: Pull complete
+7f94eaf8af20: Pull complete
+9fe9984849c1: Pull complete
+ec448270508e: Pull complete
+65ba82af53f7: Pull complete
+Digest: sha256:09e47edb668c2cac8c0bbce113f2f72c97b1555d70546dff569c8b9b27fcebd3
+Status: Downloaded newer image for golang:1.11-alpine
+ ---> e116d2efa2ab
+Step 2/9 : RUN apk add --no-cache git
+ ---> Running in 5841c75ce56c
+fetch http://dl-cdn.alpinelinux.org/alpine/v3.10/main/x86_64/APKINDEX.tar.gz
+fetch http://dl-cdn.alpinelinux.org/alpine/v3.10/community/x86_64/APKINDEX.tar.gz
+(1/5) Installing nghttp2-libs (1.39.2-r0)
+(2/5) Installing libcurl (7.66.0-r0)
+(3/5) Installing expat (2.2.8-r0)
+(4/5) Installing pcre2 (10.33-r0)
+(5/5) Installing git (2.22.2-r0)
+Executing busybox-1.30.1-r2.trigger
+OK: 21 MiB in 20 packages
+Removing intermediate container 5841c75ce56c
+ ---> 7ca041ac2d68
+Step 3/9 : RUN go get github.com/pdevine/go-asciisprite
+ ---> Running in 18e2ca9e89ec
+Removing intermediate container 18e2ca9e89ec
+ ---> 7f29d191dfa7
+Step 4/9 : WORKDIR /project
+ ---> Running in 9189460f0b6b
+Removing intermediate container 9189460f0b6b
+ ---> ac912f2dcf28
+Step 5/9 : COPY cheers.go .
+ ---> f13a36864f74
+Step 6/9 : RUN CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-extldflags "-static"' -o cheers cheers.go
+ ---> Running in c32adf55b3fc
+Removing intermediate container c32adf55b3fc
+ ---> fc94d16a18ce
+Step 7/9 : FROM scratch
+ --->
+Step 8/9 : COPY --from=builder /project/cheers /cheers
+ ---> 7679c1b0208c
+Step 9/9 : ENTRYPOINT ["/cheers"]
+ ---> Running in 3608ea109bbf
+Removing intermediate container 3608ea109bbf
+ ---> 5f4c8514f4be
+Successfully built 5f4c8514f4be
+Successfully tagged poojabhat/cheers2019:latest"""
+
+4) Run your first container.
+Running a container launches your software with private resources, securely isolated from the rest of your machine.
+
+docker run -it --rm poojabhat/cheers2019
+
+
+                                                                                                                               ##        .       ,---,
+                                                                                                                         ## ## ##       ==    ,`--.' |
+                                                                                 ,----..    ,---,                     ## ## ## ##      ===    |   :  :
+                                                                                /   /   \ ,--.' |                 /""""""""""""""""\___/ ===  '   '  ;
+                                                                               |   :     :|  |  :        ________{                      /  ===|   |  |
+                                                                               .   |  ;.__....::::::::::'''''''   \______ o          __/....__'   :  ;
+                                                                               .   ; .:'::.  |  |,--.   ,---.     ,-\    \        __/ /    .::':. |  '
+                                                                               ;   | ;':. ':::::.___.____,__________________|_.o____..:::::' ,'   :  |
+                                                                               |   : |  ':.  | ':::::::::::::::::::::::::::::::::::::'  ;_ : ';   |  ;
+                                                                               .   | '___ ':.:  | |o|.    ' / |.    ' / ||  | '    \  \  .:'. `---'. |
+                                                                               '   ; : .'|| ':. ' | :'   ;   /|'   o   /|;  : |     `--.:'   \ `--..`;
+                                                                               '   | '/  :|  :'.:_:,''   |  / |'   |  / ||  , ;    /  .'--'  /.--,_
+                                                                               |   :    / |  | ,'-._ |   :    ||   :    | ---'    _.-'.     / |    |`.
+                                                                                \   \ .'  `--''     '-\.._\  /  \   \  /   _.. -'   `--'---'  `-- -`, ;
+                                                                                 `---`                 `--''' - .,.,.-- '''                     '---`"
+                                                                                                               (:' .:)
+                                                                                                                :| '|
+                                                                                                                |. ||
+                                                                                                                || :|
+                                                                                                                :| |'
+                                                                                                                || :|
+                                                                                                                '| ||
+                                                                                                                |: ':
+                                                                                                                || :|
+                                                                                                          __..--:| |'--..__
+                                                                                                    _...-'  _.' |' :| '.__ '-..._
+                                                                                                  / -  ..---    '''''   ---...  _ \
+                                                                                                  \  _____  ..--   --..     ____  /
+                                                                                                   '-----....._________.....-----'
+
+5) (Optional) Share your image on Docker Hub: 
+Once you're ready to share your container with the world, push the image that describes it to Docker Hub
+
+docker login && docker push poojabhat/cheers2019
+
+"""Authenticating with existing credentials...
+Login Succeeded
+The push refers to repository [docker.io/poojabhat/cheers2019]
+e6b2bb76935f: Pushed
+latest: digest: sha256:551de0da25819f8a001851043d004bbc545e599e10f7924dbac3c881f9866780 size: 528"""
+
+6) Finish
+
+****************************** Docker Desktop Installation from Docker Hub : End ******************************
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+* Configure Docker
+Make sure Docker is running. The recommended configuration is at least 4 cores and 4GB of RAM on your host machine. 
+For macOS users, you can enable this in the Advanced tab located under the Preferences menu item
+
+* Get a License key
+You must have a License key copied from the MemSQL Customer Portal. You can easily create a free license for a cluster with 
+up to four license units or request an Enterprise licence trial key for larger clusters
+
+1) Getting free license from https://portal.memsql.com/licenses/
+
+BGEyM2NiOWY1YWIwZjQzNTE4OWZiMWMzYTVhZmE4ZWJkAAAAAAAAAAAEAAAAAAAAAAwwNAIYXWv+Q5M1t1io3ZqxgoZ+AGmKnHibdRQwAhgi98tDTu1peXWO/DK4mAWueLEzIL1m3rAAAA==
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+* Run the Container
+
+The MemSQL cluster-in-a-box image contains two nodes: A master aggregator node that runs SQL queries and aggregates the 
+results, and a single leaf node, which is responsible for storing and processing data. These two nodes form the most basic 
+MemSQL cluster.
+
+1) Start the Container
+
+Linux/macOS
+
+export LICENSE_KEY=[YOUR LICENSE KEY]
+
+2) Initialize cluster
+
+docker run -i --init \
+    --name memsql-ciab \
+    -e LICENSE_KEY=$LICENSE_KEY \
+    -p 3306:3306 -p 8080:8080 \
+    memsql/cluster-in-a-box
+    
+"""Unable to find image 'memsql/cluster-in-a-box:latest' locally
+latest: Pulling from memsql/cluster-in-a-box
+ab5ef0e58194: Pull complete
+3e7561b21afb: Pull complete
+8db4bee117f1: Pull complete
+c470889ad3f9: Pull complete
+48a14a644c5c: Pull complete
+af41135b0027: Pull complete
+4a02f9d67eda: Pull complete
+daed0b437c45: Pull complete
+5d81cf5cbba0: Pull complete
+ce6893afb6a7: Pull complete
+Digest: sha256:2374ebd57a7582e80cded8e8be1a3688b0ac7faa7f8985d046253a5ebeeae230
+Status: Downloaded newer image for memsql/cluster-in-a-box:latest
+2020-01-14 07:32:06.760651 Initializing MemSQL Cluster in a Box
+2020-01-14 07:32:06.760737 Creating...
+2020-01-14 07:32:07.112065 Done.
+2020-01-14 07:32:07.112145 Configuring...
+2020-01-14 07:32:07.994669 Done.
+2020-01-14 07:32:07.994796 Bootstrapping...
+2020-01-14 07:32:13.881030 Done.
+2020-01-14 07:32:13.881097 Configuring Toolbox...
+2020-01-14 07:32:13.891724 Done.
+
+Successful initialization!
+
+To start the cluster:
+    docker start (CONTAINER_NAME)
+
+To stop the cluster (must be started):
+    docker stop (CONTAINER_NAME)
+
+To remove the cluster (all data will be deleted):
+    docker rm (CONTAINER_NAME)"""    
+    
+3) If initialization fails, you will need to remove the container before retrying.
+
+docker rm memsql-ciab
+
+4) Start the container.
+
+docker start memsql-ciab
+
+
