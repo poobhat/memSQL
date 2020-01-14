@@ -1,1 +1,58 @@
+You have three ways to connect to your MemSQL cluster: 
+MemSQL Studio, 
+the memsql client application, 
+or through any compatible third-party applications.
+
+MemSQL Studio
+Connect to your cluster by accessing your local MemSQL Studio at http://localhost:8080. 
+The default Username is root and Password should be left blank.
+
+Hit Enter to log-in.
+
+1) Once you have successfully logged in, navigate to the SQL Editor page where you can type in SQL commands against 
+your cluster.
+
+2) MemSQL client application
+You can also connect to your cluster through the memsql client within the container.
+
+To do this, connect to the container and open the memsql client application.
+
+docker exec -it memsql-ciab memsql
+
+Enter your SQL commands at the memsql> prompt.
+
+3) Third-party client application
+And because you exposed port 3306 when starting up the MemSQL container, you can also connect with your favorite tools like Sequel Pro, or use tools such as the MySQL client (if you have it installed) to do local development work.
+
+mysql -h 127.0.0.1 -u root -P 3306 --prompt="memsql> "
+
+4) Run Sample Queries
+Now that you have connected to your cluster, run the following MemSQL database commands to create a table and seed it with 
+sample data:
+
+CREATE DATABASE test;
+
+USE test;
+
+CREATE TABLE test_table (id BIGINT PRIMARY KEY AUTO_INCREMENT, c INT);
+
+INSERT INTO test_table (c) VALUES (1);
+
+INSERT INTO test_table (c) SELECT c*2 FROM test_table;
+
+INSERT INTO test_table (c) SELECT c*2 FROM test_table;
+
+INSERT INTO test_table (c) SELECT c*2 FROM test_table;
+
+INSERT INTO test_table (c) SELECT c*2 FROM test_table;
+
+INSERT INTO test_table (c) SELECT c*2 FROM test_table;
+
+SELECT SUM(c) FROM test_table;
+
+---------------------------------------------------------------------------------------------------------------------------------
+* Manage the Container
+
+https://docs.memsql.com/v7.0/guides/deploy-memsql/self-managed/memsql-tools/single-host/docker/step-4/
+
 
