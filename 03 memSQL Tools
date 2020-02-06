@@ -1,0 +1,36 @@
+The MemSQL management tools allow you to perform cluster management operations for setup, configuration, and diagnostics.
+
+Most of the tools are part of the memsql-toolbox package
+
+The MemSQL management tools are as follows:
+
+memsql-toolbox-config: Performs host machine registration.
+
+memsql-deploy: Installs the memsql-server package that contains memsqlctl and the MemSQL database engine.
+
+memsql-admin: Helps you manage a MemSQL cluster.
+
+memsql-report: Collects and performs diagnostic checks on your cluster.
+
+memsqlctl: Provides lower-level access to manage nodes on a host machine.
+
+
+____________________________________________________________________________________________________________________________________________________
+
+To Access the Built-in MemSQL Tools
+
+$ docker exec -it memsql-ciab /bin/bash
+
+"Once connected, you can run any of the MemSQL tools; however, because the master aggregator and leaf node share the same 
+container (and thus the same host machine), memsqlctl was used to setup and configure the cluster. If the deployment was 
+across multiple host machines, then the higher-level tools such as memsql-admin and memsql-deploy would have been used 
+instead."
+
+bash-4.2$ memsqlctl list-nodes
++------------+--------+------+---------------+--------------+---------+----------------+--------------------+--------------+
+| MemSQL ID  |  Role  | Port | Process State | Connectable? | Version | Recovery State | Availability Group | Bind Address |
++------------+--------+------+---------------+--------------+---------+----------------+--------------------+--------------+
+| D948D48F01 | Master | 3306 | Running       | True         | 7.0.9   | Online         |                    | 0.0.0.0      |
+| 3671827374 | Leaf   | 3307 | Running       | True         | 7.0.9   | Online         | 1                  | 0.0.0.0      |
++------------+--------+------+---------------+--------------+---------+----------------+--------------------+--------------+
+
