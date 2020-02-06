@@ -40,3 +40,40 @@ CREATE TABLE company(
   extra VARCHAR(50)
 );
 
+Copy file from local to memSQL container
+
+docker cp /Users/a212584156/Box\ Sync/Documents/FDL/memSQL/trades\ database/companylist.csv memsql-ciab:/home/memsql/trades
+
+LOAD DATA INFILE '/home/memsql/trades/companylist.csv' INTO TABLE company FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\r\n' IGNORE 1 LINES;
+
+----
+Create data generator functionality
+
+The following are several functions used to generate data. The utility function, marketcap_to_DECIMAL, is used by the 
+" seed_trades stored procedure " to convert a string value for the market capitalization of a stock into a decimal value.
+
+DELIMITER //
+CREATE OR REPLACE FUNCTION marketcap_to_DECIMAL(s VARCHAR(15)) 
+  RETURNS DECIMAL(18,2) AS
+DECLARE 
+  m CHAR(1) = SUBSTR(s, LENGTH(s), 1); -- M or B
+  raw_v DECIMAL(18,2) = SUBSTR(s, 2, LENGTH(s) - 2);
+  v DECIMAL(18,2) = NULL;
+BEGIN
+  IF m = "B" THEN 
+    v = raw_v * 1E9;
+  ELSE
+    v = raw_v;
+  END IF;
+  RETURN v;
+END //
+DELIMITER ;
+
+
+SELECT symbol, marketcap_to_DECIMAL(market_cap), rank() OVER (ORDER BY marketcap_to_DECIMAL(market_cap)) AS _rank
+    FROM company
+    ORDER BY _rank desc LIMIT 200;
+
+SELECT symbol, marketcap_to_DECIMAL(last_sale)
+    FROM company where last_sale <> 'n/a'
+    ORDER BY marketcap_to_DECIMAL(last_sale) desc LIMIT 20;
